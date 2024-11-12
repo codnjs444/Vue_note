@@ -82,7 +82,7 @@ const fetchMenuData = async () => {
 
     // menuNm 값들을 콘솔에 출력
     menuItems.forEach((item) => {
-      console.log(item.menuNm)
+      // console.log(item.menuNm)
     })
   } catch (error) {
     console.error('Error loading menu data:', error)
