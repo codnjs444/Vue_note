@@ -120,6 +120,7 @@ function handleRoute(list) {
 let isMenuLoaded = false
 
 router.beforeEach(async (to, from, next) => {
+  console.log('Index.js[beforeEach]')
   if (!isMenuLoaded) {
     isMenuLoaded = true
     await setMenuList() // 첫 로드 시 메뉴 데이터 가져오기

@@ -40,8 +40,9 @@ export const useRouteStore = defineStore('routeStore', () => {
 
     // ✅ 최종 트리 구조를 menuTree에 저장
     menuTree.value = tree
-    console.log('useRouteStore[menuTree]', menuTree.value)
   }
+
+  handleMenuSort()
 
   // 🛠️ Store에서 반환되는 상태와 함수
   return {

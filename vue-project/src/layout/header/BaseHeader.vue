@@ -2,7 +2,7 @@
 <template>
   <v-app-bar flat color="black" height="48">
     <!-- 🍎 좌측 아이콘 (Apple 로고) -->
-    <v-btn icon @click="navigate('/')">
+    <v-btn icon @click="goHome()">
       <SvgIcon type="mdi" :path="mdiApple" />
     </v-btn>
 
@@ -14,32 +14,12 @@
       <v-btn
         v-for="item in props.menuTree"
         :key="item.id"
+        @click="onHeaderMenuClick(item)"
         text
-        @click="navigate(item.routerPath)"
-        @mouseenter="isHoverMenu = true"
-        @mouseleave="isHoverMenu = false"
         class="menu-item"
       >
         {{ item.menuNm }}
       </v-btn>
-
-      <!-- 📑 드롭다운 메뉴 -->
-      <v-card
-        v-if="isHoverMenu"
-        class="dropdown-content"
-        outlined
-        @mouseenter="isHoverMenu = true"
-        @mouseleave="isHoverMenu = false"
-      >
-        <v-list>
-          <v-list-item
-            v-for="subItem in props.menuTree.find((i) => i.id === item.id)?.childMenu"
-            :key="subItem.id"
-          >
-            <v-list-item-title>{{ subItem.menuNm }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card>
     </v-row>
 
     <!-- 🔍 우측 아이콘 (검색, 장바구니) -->
@@ -64,23 +44,27 @@ const props = defineProps({
   menuTree: Array,
 })
 
-onMounted(() => {
-  console.log('BaseHeader[menuTree]', props.menuTree)
-})
-
-// 🌐 페이지 이동 함수
-const navigate = (link) => {
-  router.push(link)
-}
+/**
+ * 👉 emit
+ */
+const emit = defineEmits(['route'])
 
 /**
- * 📌 메뉴 호버 상태
- * - 마우스를 올리면 드롭다운 메뉴가 나타나고, 마우스를 떼면 사라집니다.
+ * 👉 메뉴 클릭 / 이동
  */
-const isHoverMenu = ref(false) // 🖱️ 메뉴 호버 트리거
+const onHeaderMenuClick = (route) => {
+  if (route.routerName !== '') {
+    const getMenu = route.childMenu.filter((item) => item.routerName === route.routerName)
+    onMenuClick(getMenu[0])
+    console.log(getMenu[0])
+  }
+}
+const onMenuClick = (route) => {
+  emit('route', route)
+}
 
-watch(isHoverMenu, (newValue) => {
-  console.log(`🖱️ isHoverMenu 상태 변경: ${newValue ? '활성화됨' : '비활성화됨'}`)
+onMounted(() => {
+  console.log('BaseHeader[menuTree]', props.menuTree)
 })
 </script>
 
