@@ -9,14 +9,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import BaseLayout from '@/layout/BaseLayout.vue'
 
-// const currentRoute = [
-//   {
-//     path: '/',
-//     name: 'Base',
-//     component: BaseLayout,
-//   },
-// ]
-const currentRoute = [
+const baseRoute = [
   { path: '/', name: 'Base', component: BaseLayout },
   { path: '/base', name: 'BaseAlternative', component: BaseLayout },
 ]
@@ -49,7 +42,7 @@ const detailRoute = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: currentRoute,
+  routes: baseRoute,
   data: {
     common: commonRoute,
     menu: [],
@@ -63,7 +56,6 @@ import { menuByUserList } from '@/stores/api/menuApi'
 async function setMenuList() {
   try {
     const list = await menuByUserList()
-    console.log('list', list)
     setCommonRoute()
     dynamicRoute(list.data)
   } catch (error) {
@@ -74,7 +66,6 @@ async function setMenuList() {
 //로그인, 마이페이지 등 공통적으로 사용되는 기본 라우트를 설정
 async function setCommonRoute() {
   const modules = import.meta.glob('../layout/**/*.vue')
-  console.log('modules', modules)
   for (let i = 0; i < commonRoute.length; i++) {
     const route = commonRoute[i]
 
@@ -84,10 +75,6 @@ async function setCommonRoute() {
       component: modules[`../layout${route.routerPath}/${route.routerName}.vue`],
     }
     config.meta = { requiresAuth: true }
-    console.log('config', config)
-    console.log('router:', router) // 정의된 routes 배열을 확인
-    console.log('router.options:', router.options) // 정의된 routes 배열을 확인
-    console.log('router.options.routes:', router.options.routes) // 정의된 routes 배열을 확인
     router.addRoute('Base', config)
     // if (route.auth) {
     //   config.meta = { requiresAuth: true }
@@ -135,7 +122,6 @@ let isMenuLoaded = false
 router.beforeEach(async (to, from, next) => {
   if (!isMenuLoaded) {
     isMenuLoaded = true
-    console.log('성공')
     await setMenuList() // 첫 로드 시 메뉴 데이터 가져오기
   }
   next() // 다음 라우트로 이동
