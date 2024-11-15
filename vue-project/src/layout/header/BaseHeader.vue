@@ -1,69 +1,133 @@
-<!-- BaseHeader.vue -->
 <template>
-  <v-app-bar flat color="black" height="48">
-    <!-- 🍎 좌측 아이콘 (Apple 로고) -->
-    <v-btn icon @click="goHome()">
-      <SvgIcon type="mdi" :path="mdiApple" />
-    </v-btn>
-
-    <!-- 🌐 좌측과 우측 아이콘을 떨어뜨리고 중앙 정렬을 위해 v-spacer 사용 -->
-    <v-spacer></v-spacer>
-
-    <!-- 📋 중앙 메뉴 -->
-    <v-row class="header-menu" align="center" dense>
-      <v-btn
-        v-for="item in props.menuTree"
-        :key="item.id"
-        @click="onHeaderMenuClick(item)"
-        text
-        class="menu-item"
-      >
-        {{ item.menuNm }}
-      </v-btn>
-    </v-row>
-
-    <!-- 🔍 우측 아이콘 (검색, 장바구니) -->
-    <v-spacer></v-spacer>
-    <v-btn icon>
-      <SvgIcon type="mdi" :path="mdiMagnify" />
-    </v-btn>
-    <v-btn icon>
-      <SvgIcon type="mdi" :path="mdiCart" />
-    </v-btn>
+  <v-app-bar
+    location="top"
+    width="100%"
+    color="#555555"
+    :height="isHoverMenu ? maxMenuHeight : '16'"
+    density="prominent"
+  >
+    <template #default>
+      <v-row align="center" class="justify-space-between">
+        <v-col cols="12">
+          <!-- 👉 메뉴 -->
+          <v-col @mouseleave="isHoverMenu = false">
+            <v-row>
+              <template v-for="item in props.menuTree" :key="item.id">
+                <v-col class="pa-0 header-menu">
+                  <v-btn
+                    rounded="0"
+                    elevation="0"
+                    width="100%"
+                    @mouseover="isHoverMenu = true"
+                    class="menu-item"
+                    @click="onHeaderMenuClick(item)"
+                  >
+                    <!-- 👉 메인 매뉴 -->
+                    <h4 class="font-weight-regular text-normal ma-auto">
+                      {{ item.menuNm }}
+                    </h4>
+                  </v-btn>
+                  <v-card
+                    rounded="0"
+                    elevation="0"
+                    width="100%"
+                    height="100%"
+                    color="#555555"
+                    card-class="pa-0 text-center py-5"
+                  >
+                    <!-- 👉 서브 메뉴 -->
+                    <template #default>
+                      <v-list v-if="isHoverMenu" density="compact" class="pa-0">
+                        <v-row
+                          no-gutters
+                          v-for="sub_item in item.childMenu"
+                          :key="sub_item.id"
+                          justify="center"
+                          align="center"
+                          @click="onMenuClick(sub_item)"
+                          class="menu-item"
+                        >
+                          <span>{{ sub_item.menuNm }}</span>
+                          <svg-icon
+                            v-if="sub_item.svcType === 'A'"
+                            name="link-external"
+                            class="ml-1"
+                            :height="11"
+                            :width="14"
+                          ></svg-icon>
+                        </v-row>
+                      </v-list>
+                    </template>
+                  </v-card>
+                </v-col>
+              </template>
+            </v-row>
+          </v-col>
+        </v-col>
+      </v-row>
+    </template>
   </v-app-bar>
 </template>
-
 <script setup>
 import BaseView from '@/components/base/BaseView'
-const { ref, router, watch, onMounted } = BaseView()
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiApple, mdiMagnify, mdiCart } from '@mdi/js'
-import { defineProps } from 'vue'
+import { defineProps, defineEmits, onMounted } from 'vue'
 
+const { ref, router, watch } = BaseView()
+
+// 👉 Props 정의
 const props = defineProps({
   menuTree: Array,
 })
 
-/**
- * 👉 emit
- */
-const emit = defineEmits(['route'])
+// 👉 Emit 정의
+const emit = defineEmits(['goHome', 'route'])
+
+// 👉 홈 으로 (대시보드 / dashboard)
+const goHome = () => {
+  emit('goHome')
+}
 
 /**
- * 👉 메뉴 클릭 / 이동
+ * 👉 메뉴 클릭 / 이동 이벤트 처리
  */
 const onHeaderMenuClick = (route) => {
   if (route.routerName !== '') {
     const getMenu = route.childMenu.filter((item) => item.routerName === route.routerName)
     onMenuClick(getMenu[0])
-    console.log(getMenu[0])
   }
 }
+
+// 👉 메뉴 클릭 시 호출되는 함수
+const isHoverMenu = ref(false)
+const hoveredItem = ref(null)
+
+const ChildmenuTree = (item) => {
+  hoveredItem.value = item
+  isHoverMenu.value = true
+}
+
 const onMenuClick = (route) => {
+  console.log('BaseHeader[onMenuClick]', route)
   emit('route', route)
 }
 
+const maxMenuHeight = ref(0)
+const handleMaxHeaderHeight = () => {
+  let maxMenuLength = 0
+  for (let menu of props.menuTree) {
+    if (menu.childMenu !== null && menu.childMenu.length > maxMenuLength) {
+      maxMenuLength = menu.childMenu.length
+    }
+  }
+  maxMenuHeight.value = String(maxMenuLength * 17.5)
+  console.log('handleMaxHeaderHeight', maxMenuHeight.value)
+}
+
+// 👉 컴포넌트가 마운트될 때 실행되는 함수
 onMounted(() => {
+  handleMaxHeaderHeight()
   console.log('BaseHeader[menuTree]', props.menuTree)
 })
 </script>
@@ -71,32 +135,25 @@ onMounted(() => {
 <style scoped>
 /* 🎨 헤더 스타일 */
 .v-app-bar {
-  background-color: black;
+  background-color: #5555;
   border-bottom: 1px solid #555555;
-  color: white;
-}
-
-/* 📋 중앙 메뉴 스타일 */
-.header-menu {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
 }
 
 /* 📋 메뉴 아이템 스타일 */
 .menu-item {
-  color: white;
-  font-weight: 400;
-  font-size: 14px;
+  background-color: #555555;
+  font-weight: 200;
+  font-size: 9px;
   min-width: 60px;
   padding: 0 10px;
+  color: white;
 }
 
 /* 🌐 아이콘 스타일 */
 .v-icon,
 .svg-icon {
   color: white;
-  font-size: 20px;
+  width: 17px;
+  height: 17px;
 }
 </style>
