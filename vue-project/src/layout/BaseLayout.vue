@@ -12,6 +12,9 @@
     <!-- 🌐 헤더 컴포넌트 추가 -->
     <!-- 메뉴 트리가 로드된 경우에만 BaseHeader 렌더링 -->
     <BaseHeader @route="onMenuClick" :menuTree="menuTree" />
+    <v-main>
+      <router-view />
+    </v-main>
   </v-app>
 </template>
 
@@ -33,7 +36,8 @@ const menuTree = computed(() => routeStore.menuTree)
 
 /* 👉  메뉴 클릭 이벤트 (헤더) */
 const onMenuClick = (item) => {
-  console.log('onMenuClick', item)
+  routeStore.handleRouter(item)
+  console.log('BaseLayout[onMenuClick]', item)
 }
 
 onMounted(() => {
