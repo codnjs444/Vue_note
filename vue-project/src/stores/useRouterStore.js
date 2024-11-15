@@ -44,9 +44,25 @@ export const useRouteStore = defineStore('routeStore', () => {
 
   handleMenuSort()
 
+  // BaseHeader에서 클릭 된 메뉴 Route처리
+  const handleRouter = (route) => {
+    console.log('RouterStore[handleRouter] 실행', route)
+    if (route) {
+      console.log('route 확인 성공')
+      router.push({ name: route.routerName })
+    } else {
+      console.log('route 확인 실패')
+      router.push({ path: '/' })
+    }
+    setTimeout(() => {
+      window.scrollTo({ top: 0 })
+    }, 0)
+  }
+
   // 🛠️ Store에서 반환되는 상태와 함수
   return {
     handleMenuSort,
     menuTree,
+    handleRouter,
   }
 })
