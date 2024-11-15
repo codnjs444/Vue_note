@@ -9,9 +9,7 @@
 
 <template>
   <v-app>
-    <!-- 🌐 헤더 컴포넌트 추가 -->
-    <!-- 메뉴 트리가 로드된 경우에만 BaseHeader 렌더링 -->
-    <BaseHeader @route="onMenuClick" :menuTree="menuTree" />
+    <BaseHeader @route="onMenuClick" @goHome="goHome()" :menuTree="menuTree" />
     <v-main>
       <router-view />
     </v-main>
@@ -23,7 +21,7 @@
 import BaseView from '@/components/base/BaseView'
 import BaseHeader from './header/BaseHeader.vue'
 
-const { ref, computed, onMounted, watchEffect } = BaseView()
+const { computed, onMounted, router } = BaseView()
 
 /* 📂 라우트 관련 Store 가져오기 */
 import { useRouteStore } from '@/stores/useRouterStore'
@@ -32,7 +30,10 @@ const routeStore = useRouteStore()
 /* 🌳 메뉴 트리를 computed로 가져와 menuTree로 정의 */
 const menuTree = computed(() => routeStore.menuTree)
 
-/* 🖥️ 컴포넌트 마운트 시 메뉴 트리 설정 함수 호출 및 초기 데이터 로그 출력 */
+/* 👉  홈 이동 함수 (대시보드 / dashboard) */
+const goHome = () => {
+  router.push({ name: 'BaseLayout' })
+}
 
 /* 👉  메뉴 클릭 이벤트 (헤더) */
 const onMenuClick = (item) => {
