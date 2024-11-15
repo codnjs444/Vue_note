@@ -2,9 +2,9 @@
   <v-container>
     <v-row class="justify-center">
       <v-col cols="12" md="8" class="text-center">
-        <h1>Mac Page</h1>
-        <h1>Mac Page</h1>
-        <p>Welcome to the Mac section. This is a placeholder content for testing purposes.</p>
+        <h1>Store Page</h1>
+        <h1>Store Page</h1>
+        <p>Welcome to the Store section. This is a placeholder content for testing purposes.</p>
         <v-btn color="primary" @click="handleTestClick">Click Me</v-btn>
       </v-col>
     </v-row>
