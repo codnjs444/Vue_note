@@ -20,22 +20,22 @@
 </template>
 
 <script>
-import { login } from '../api/auth'
+import { login } from '../../stores/api/authApi.js'
 
 export default {
   data() {
     return {
-      username: '', // 입력된 사용자 이름
-      password: '', // 입력된 비밀번호
+      username: '', // 사용자 이름
+      password: '', // 비밀번호
     }
   },
   methods: {
     async handleLogin() {
       try {
         const response = await login(this.username, this.password)
-        alert(response) // 성공 메시지 표시
+        alert(response) // 로그인 성공 메시지
       } catch (error) {
-        alert(error) // 오류 메시지 표시
+        alert(error) // 오류 메시지
       }
     },
   },

@@ -12,6 +12,7 @@
     <BaseHeader @route="onMenuClick" @goHome="goHome()" :menuTree="menuTree" />
     <v-main>
       <router-view />
+      <BaseLogin />
     </v-main>
   </v-app>
 </template>
@@ -20,6 +21,7 @@
 /* 🛠️ BaseView로부터 Composition API 메서드 가져오기 */
 import BaseView from '@/components/base/BaseView'
 import BaseHeader from './header/BaseHeader.vue'
+import BaseLogin from './login/BaseLogin.vue'
 
 const { computed, onMounted, router } = BaseView()
 

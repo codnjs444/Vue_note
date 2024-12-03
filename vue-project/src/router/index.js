@@ -8,10 +8,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import BaseLayout from '@/layout/BaseLayout.vue'
+import BaseLogin from '@/layout/login/BaseLogin.vue'
 
 const baseRoute = [
   { path: '/', name: 'Base', component: BaseLayout },
   { path: '/base', name: 'BaseAlternative', component: BaseLayout },
+  { path: '/login', name: 'BaseLogin', component: BaseLogin },
 ]
 const commonRoute = [
   {
